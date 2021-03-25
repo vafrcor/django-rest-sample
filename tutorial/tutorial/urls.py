@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import include
-
+from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('snippets.urls')),
@@ -25,3 +25,11 @@ urlpatterns = [
 urlpatterns += [
     path('api-auth/', include('rest_framework.urls')),
 ]
+
+# WARNING! This 3-line code below are hack-way to enable static-serve on non-development  environment 
+# if settings.FORCE_DJANGO_SERVE_STATIC and not settings.DEBUG:
+if settings.FORCE_DJANGO_SERVE_STATIC:
+    urlpatterns.append(re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATICFILES_DIRS[0]}))
+    urlpatterns.append(re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}))
+    
+
